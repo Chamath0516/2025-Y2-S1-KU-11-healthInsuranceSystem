@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contact Us - HealthSure</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="/css/theme.css" />
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f8f9fa; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            padding-bottom: 20px;
+            border-bottom: 3px solid #28a745;
+        }
+        .header h1 { 
+            color: #2c3e50; 
+            margin-bottom: 10px; 
+            font-size: 2.5em;
+        }
+        .header p { 
+            color: #7f8c8d; 
+            font-size: 18px; 
+            font-style: italic;
+        }
+        .content { 
+            margin-bottom: 30px; 
+        }
+        .content h2 { 
+            color: #34495e; 
+            margin-bottom: 20px; 
+            font-size: 1.8em;
+            border-left: 4px solid #28a745;
+            padding-left: 15px;
+        }
+        .content p { 
+            color: #5d6d7e; 
+            font-size: 16px; 
+            margin-bottom: 20px;
+        }
+        .contact-info { 
+            background: #e8f5e8; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin: 25px 0;
+            border-left: 5px solid #28a745;
+        }
+        .contact-item { 
+            margin: 15px 0; 
+            padding: 10px 0;
+            border-bottom: 1px solid #d4edda;
+        }
+        .contact-item:last-child { 
+            border-bottom: none; 
+        }
+        .contact-item strong { 
+            color: #2c3e50; 
+            font-size: 16px;
+        }
+        .contact-item span { 
+            color: #5d6d7e; 
+            font-size: 16px;
+        }
+        .contact-form { 
+            background: #f8f9fa; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin: 30px 0;
+            border: 2px solid #dee2e6;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            color: #2c3e50;
+        }
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #dee2e6; 
+            border-radius: 5px; 
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+            outline: none; 
+            border-color: #28a745; 
+        }
+        .form-group textarea { 
+            height: 120px; 
+            resize: vertical;
+        }
+        .btn { 
+            background: #28a745; 
+            color: white; 
+            padding: 12px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover { 
+            background: #218838; 
+        }
+        .btn-secondary { 
+            background: #6c757d; 
+        }
+        .btn-secondary:hover { 
+            background: #545b62; 
+        }
+        .navigation { 
+            text-align: center; 
+            margin-top: 40px; 
+            padding-top: 30px;
+            border-top: 1px solid #dee2e6;
+        }
+        .office-hours { 
+            background: #fff3cd; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .office-hours h3 { 
+            color: #856404; 
+            margin-bottom: 10px;
+        }
+        .office-hours p { 
+            color: #856404; 
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📞 Contact Us</h1>
+            <p>We'd love to hear from you! Get in touch with our team.</p>
+        </div>
+
+        <div class="content">
+            <p>We'd love to hear from you! Whether you have questions, suggestions, or technical issues, our team is here to help.</p>
+
+            <div class="contact-info">
+                <h2>Get in Touch</h2>
+                
+                <div class="contact-item">
+                    <strong>📧 Email:</strong> <span>support@healthsure.com</span>
+                </div>
+                
+                <div class="contact-item">
+                    <strong>📱 Phone:</strong> <span>0774455669</span>
+                </div>
+                
+                <div class="contact-item">
+                    <strong>📍 Address:</strong> <span>NO.19<br>HealthSure Solutions<br>123 Innovation Street, Kandy</span>
+                </div>
+
+                <div class="office-hours">
+                    <h3>🕒 Office Hours:</h3>
+                    <p><strong>Monday – Friday:</strong> 9:00 AM – 5:00 PM</p>
+                    <p><strong>Saturday – Sunday:</strong> Closed</p>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h2>Send us a Message</h2>
+                <p>You can also reach us through our Contact Form below. Just share your query, and we'll get back to you as soon as possible!</p>
+                
+                <form action="#" method="post">
+                    <div class="form-group">
+                        <label for="name">Full Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject:</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="billing">Billing Question</option>
+                            <option value="claim">Claim Related</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea id="message" name="message" placeholder="Please describe your inquiry in detail..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a th:href="@{/}" class="btn btn-secondary">← Back to Home</a>
+            <a th:href="@{/about}" class="btn">About Us</a>
+        </div>
+    </div>
+</body>
+</html>

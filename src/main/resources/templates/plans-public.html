@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Insurance Plans - Public</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h1 { color: #2c3e50; margin: 0; }
+        .plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .plan { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; background: #fff; }
+        .meta { color: #546e7a; font-size: 14px; margin: 6px 0; }
+        .btn { background: #3498db; color: white; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; text-decoration:none; }
+        .btn:hover { background: #2980b9; }
+        .btn-secondary { background: #95a5a6; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .note { color:#7f8c8d; font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>Our Insurance Plans</h1>
+            <div class="note">Browse and compare plans. Apply after you log in.</div>
+        </div>
+        <div>
+            <a th:href="@{/login}" class="btn">Log in to apply</a>
+        </div>
+    </div>
+
+    <form th:action="@{/plans/compare}" method="get" style="margin-bottom:12px">
+        <button type="submit" class="btn">Compare Selected</button>
+    </form>
+
+    <div class="plans">
+        <div class="plan" th:each="plan : ${plans}">
+            <div>
+                <label>
+                    <input type="checkbox" name="ids" form="compareForm" th:value="${plan.id}" />
+                    <strong th:text="${plan.name}">Plan Name</strong>
+                </label>
+            </div>
+            <div class="meta" th:text="${plan.description}">Description...</div>
+            <div class="meta">Coverage: <span th:text="${#numbers.formatDecimal(plan.coverageAmount, 1, 'COMMA', 2, 'POINT')}">0.00</span></div>
+            <div class="meta">Premium (monthly): <span th:text="${#numbers.formatDecimal(plan.premium, 1, 'COMMA', 2, 'POINT')}">0.00</span></div>
+            <div class="meta" th:if="${plan.name != null and #strings.containsIgnoreCase(plan.name, 'Senior')}">Eligibility: Age 60+</div>
+        </div>
+    </div>
+
+    <form id="compareForm" th:action="@{/plans/compare}" method="get"></form>
+</div>
+</body>
+</html>

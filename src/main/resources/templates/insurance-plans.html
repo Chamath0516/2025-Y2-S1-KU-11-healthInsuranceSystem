@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Insurance Plans</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="/css/theme.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h1 { color: #2c3e50; margin: 0; }
+        .plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .plan { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; background: #fff; }
+        .plan h3 { margin: 0 0 8px; color: #2c3e50; }
+        .meta { color: #546e7a; font-size: 14px; margin: 6px 0; }
+        .actions { margin-top: 12px; display:flex; gap:8px; align-items:center; }
+        .btn { background: #3498db; color: white; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+        .btn:hover { background: #2980b9; }
+        .btn-secondary { background: #95a5a6; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .eligibility { font-size: 12px; color: #9c27b0; margin-top: 6px; }
+        .compare-bar { display:flex; justify-content: space-between; align-items:center; margin-bottom: 12px; }
+        .compare-input { margin-right: 6px; }
+        .note { color:#7f8c8d; font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>Insurance Plans</h1>
+            <div class="note">Welcome, <span th:text="${customer != null ? customer.firstName + ' ' + customer.lastName : 'Guest'}">Customer Name</span></div>
+        </div>
+        <div>
+            <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+            <a th:href="@{/plans}" class="btn btn-secondary">Public Plans</a>
+        </div>
+    </div>
+
+    <form id="compareForm" th:action="@{/plans/compare}" method="get" class="compare-bar">
+        <div class="note">Select up to 2 plans to compare</div>
+        <div>
+            <button type="submit" class="btn">Compare Selected</button>
+        </div>
+    </form>
+
+    <div class="plans">
+        <div class="plan" th:each="plan : ${plans}">
+            <div>
+                <label>
+                    <input class="compare-input" type="checkbox" name="ids" form="compareForm" th:value="${plan.id}" />
+                    <strong th:text="${plan.name}">Plan Name</strong>
+                </label>
+            </div>
+            <div class="meta" th:text="${plan.description}">Description...</div>
+            <div class="meta">Coverage: <span th:text="${#numbers.formatDecimal(plan.coverageAmount, 1, 'COMMA', 2, 'POINT')}">0.00</span></div>
+            <div class="meta">Premium (monthly): <span th:text="${#numbers.formatDecimal(plan.premium, 1, 'COMMA', 2, 'POINT')}">0.00</span></div>
+
+            <div class="eligibility" th:if="${plan.name != null and #strings.containsIgnoreCase(plan.name, 'Senior')}">Requires age 60 or above</div>
+
+            <div class="actions">
+                <a class="btn" th:href="@{'/customer/apply-policy'(planId=${plan.id})}">Apply</a>
+                <a class="btn btn-secondary" th:href="@{/plans/compare(ids=${plan.id})}">Compare</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

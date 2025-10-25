@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Claim Processing Dashboard - HealthSure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #476EAE;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: #48B3AF;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(71, 110, 174, 0.1);
+            color: #476EAE;
+        }
+
+        .user-info {
+            margin-top: auto;
+            padding: 15px;
+            background: rgba(71, 110, 174, 0.05);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .user-info span {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: #476EAE;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: rgba(71, 110, 174, 0.1);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background: rgba(71, 110, 174, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .content-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99);
+        }
+
+        .welcome-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .welcome-section h2 {
+            color: #476EAE;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .welcome-text {
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Card Styling */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 25px;
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header h4 {
+            color: #476EAE;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Table Styling */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background: linear-gradient(135deg, #476EAE, #48B3AF);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #476EAE, #48B3AF);
+            box-shadow: 0 4px 12px rgba(71, 110, 174, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3a5c94, #3a9c98);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(71, 110, 174, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48B3AF, #A7E399);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #3a9c98, #8bd47a);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #e55c5c, #ff7a7a);
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ffb300);
+            color: #2c3e50;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #e0a800, #d39e00);
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+        }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, #138496, #117a8b);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 2px solid rgba(71, 110, 174, 0.2);
+            color: #476EAE;
+            background: transparent;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(71, 110, 174, 0.1);
+            border-color: #476EAE;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, #48B3AF, #A7E399) !important;
+        }
+
+        .bg-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e) !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, #ffc107, #ffb300) !important;
+            color: #2c3e50 !important;
+        }
+
+        /* Alert Styling */
+        .alert {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(167, 227, 153, 0.2);
+            border-left-color: #48B3AF;
+            color: #1e8449;
+        }
+
+        .alert-danger {
+            background: rgba(255, 107, 107, 0.2);
+            border-left-color: #ff6b6b;
+            color: #c0392b;
+        }
+
+        /* Form Elements */
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid rgba(71, 110, 174, 0.2);
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #48B3AF;
+            box-shadow: 0 0 0 3px rgba(72, 179, 175, 0.2);
+        }
+
+        .form-select {
+            border-radius: 8px;
+            border: 2px solid rgba(71, 110, 174, 0.2);
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: #48B3AF;
+            box-shadow: 0 0 0 3px rgba(72, 179, 175, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Text Utilities */
+        .text-danger {
+            color: #ff6b6b !important;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">Health<span>Sure</span></div>
+        <div class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active">
+                🏠 Dashboard
+            </a>
+            <a href="/cpo/claims" class="nav-item">
+                📋 Claims Review
+            </a>
+            <a href="/cpo/approved" class="nav-item">
+                ✅ Approved Claims
+            </a>
+            <a href="/cpo/history" class="nav-item">
+                📊 History
+            </a>
+            <a href="/cpo/profile" class="nav-item">
+                👤 Profile
+            </a>
+        </div>
+        <div class="user-info">
+            <span th:text="${officerName != null ? 'Welcome, ' + officerName : 'Welcome, Officer'}">Welcome, Officer</span>
+            <a th:href="@{/logout}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="content-header">
+            <div class="welcome-section">
+                <h2>Claim Processing Dashboard</h2>
+                <div class="welcome-text" th:text="${officerName != null ? 'Welcome, ' + officerName : ''}"></div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        </div>
+
+        <!-- Claims Awaiting Review -->
+        <div class="card">
+            <div class="card-header">
+                <h4>Claims Awaiting Your Review</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Customer Name</th>
+                            <th>Provider Name</th>
+                            <th>Submitted On</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="claim : ${claimsForReview}">
+                            <td th:text="${claim.id}"></td>
+                            <td th:text="${claim.customer != null ? (claim.customer.firstName + ' ' + claim.customer.lastName) : '-'}"></td>
+                            <td th:text="${claim.provider != null ? (claim.provider.firstName + ' ' + claim.provider.lastName) : '-'}"></td>
+                            <td th:text="${claim.submittedAt != null ? #temporals.format(claim.submittedAt, 'dd-MMM-yyyy') : '-'}"></td>
+                            <td>
+                                <a th:href="@{/cpo/claims/{id}/review(id=${claim.id})}" class="btn btn-primary btn-sm">Review Claim</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(claimsForReview)}">
+                            <td colspan="5" class="text-center text-muted">No claims are currently in review.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Provider Submissions -->
+        <div class="card">
+            <div class="card-header">
+                <h4>Provider Submissions</h4>
+            </div>
+            <div class="card-body">
+                <div th:if="${toSubmissions == null or toSubmissions.isEmpty()}">
+                    <p class="text-muted">No provider submissions yet.</p>
+                </div>
+                <div th:if="${toSubmissions != null and !toSubmissions.isEmpty()}">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Submission ID</th>
+                                <th>Pending Claim ID</th>
+                                <th>Provider</th>
+                                <th>Customer</th>
+                                <th>Submitted At</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="sub : ${toSubmissions}">
+                                <td th:text="${sub.id}"></td>
+                                <td th:text="${sub.pendingClaimId}"></td>
+                                <td th:text="${sub.providerFirstName != null ? (sub.providerFirstName + ' ' + (sub.providerLastName != null ? sub.providerLastName : '')) : sub.providerUsername}"></td>
+                                <td th:text="${sub.customerFirstName != null ? (sub.customerFirstName + ' ' + (sub.customerLastName != null ? sub.customerLastName : '')) : sub.customerUsername}"></td>
+                                <td th:text="${sub.submittedAt != null ? #temporals.format(sub.submittedAt, 'dd-MMM-yyyy HH:mm') : '-'}"></td>
+                                <td>
+                                    <div class="d-flex flex-column gap-2">
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <a th:href="@{/cpo/to-claim-officer/{id}/doctor-document(id=${sub.id})}" class="btn btn-outline btn-sm">Download Doctor PDF</a>
+                                            <a th:href="@{/cpo/pending-claims/{id}/document(id=${sub.pendingClaimId})}" class="btn btn-outline btn-sm">Download Customer PDF</a>
+                                            <a th:href="@{/cpo/pending-claims/{id}/review(id=${sub.pendingClaimId})}" class="btn btn-info btn-sm">Open Review</a>
+                                        </div>
+
+                                        <!-- Action Forms -->
+                                        <div class="d-flex flex-column gap-2 mt-2">
+                                            <form th:action="@{/cpo/pending-claims/{id}/approve(id=${sub.pendingClaimId})}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                            </form>
+
+                                            <form th:action="@{/cpo/pending-claims/{id}/deny(id=${sub.pendingClaimId})}" method="post" class="d-inline">
+                                                <div class="input-group">
+                                                    <input type="text" name="reason" placeholder="Denial reason (optional)" class="form-control" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">Deny</button>
+                                                </div>
+                                            </form>
+
+                                            <form th:action="@{/cpo/pending-claims/{id}/request-info(id=${sub.pendingClaimId})}" method="post" class="d-inline">
+                                                <div class="input-group">
+                                                    <input type="text" name="message" placeholder="Request info message" class="form-control" required />
+                                                    <select name="routeTo" class="form-select">
+                                                        <option value="DOCTOR">Doctor</option>
+                                                        <option value="CUSTOMER" selected>Customer</option>
+                                                    </select>
+                                                    <button type="submit" class="btn btn-warning btn-sm">Request Info</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Claims -->
+        <div class="card">
+            <div class="card-header">
+                <h4>Approved Claims</h4>
+            </div>
+            <div class="card-body">
+                <div th:if="${approvedClaims == null or approvedClaims.isEmpty()}">
+                    <p class="text-muted">No approved claims yet.</p>
+                </div>
+                <div th:if="${approvedClaims != null and !approvedClaims.isEmpty()}">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Approved ID</th>
+                                <th>Pending Claim ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Approved At</th>
+                                <th>Approved By</th>
+                                <th>Details</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="ac : ${approvedClaims}">
+                                <td th:text="${ac.id}"></td>
+                                <td th:text="${ac.pendingClaimId}"></td>
+                                <td th:text="${ac.customer != null ? (ac.customer.firstName + ' ' + ac.customer.lastName) : '-'}"></td>
+                                <td th:text="${ac.amount != null ? ('$' + #numbers.formatDecimal(ac.amount, 1, 'COMMA', 2, 'POINT')) : '-'}"></td>
+                                <td th:text="${ac.approvedAt != null ? #temporals.format(ac.approvedAt, 'dd-MMM-yyyy HH:mm') : '-'}"></td>
+                                <td th:text="${ac.approvedBy}"></td>
+                                <td>
+                                    <a th:href="@{/cpo/claims/{id}/review(id=${ac.pendingClaimId})}" class="btn btn-info btn-sm">View Pending</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Claims History -->
+        <div class="card">
+            <div class="card-header">
+                <h4>Completed Claims History</h4>
+            </div>
+            <div class="card-body">
+                <div th:if="${completedClaims == null or completedClaims.isEmpty()}">
+                    <p class="text-muted">You have not processed any claims yet.</p>
+                </div>
+                <div th:if="${completedClaims != null and !completedClaims.isEmpty()}">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Claim ID</th>
+                                <th>Customer Name</th>
+                                <th>Submitted At</th>
+                                <th>Amount</th>
+                                <th>Final Status</th>
+                                <th>Details</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="claim : ${completedClaims}">
+                                <td th:text="${claim.id}"></td>
+                                <td th:text="${claim.customer != null ? (claim.customer.firstName + ' ' + claim.customer.lastName) : '-'}"></td>
+                                <td th:text="${claim.submittedAt != null ? #temporals.format(claim.submittedAt, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+                                <td th:text="${claim.amount != null ? ('$' + #numbers.formatDecimal(claim.amount, 1, 'COMMA', 2, 'POINT')) : '-'}"></td>
+                                <td>
+                                            <span class="badge"
+                                                  th:classappend="${claim.status == 'APPROVED' ? 'bg-success' : (claim.status == 'REJECTED' ? 'bg-danger' : 'bg-warning')}"
+                                                  th:text="${claim.status}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/cpo/claims/{id}/review(id=${claim.id})}" class="btn btn-info btn-sm">View</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

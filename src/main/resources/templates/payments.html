@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Premium Payments | Health Insurance Management System</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="/css/theme.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #005eb8;
+            --primary-dark: #004494;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gray-light);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            font-size: 22px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        input[type="text"], input[type="number"], input[type="month"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, input[type="month"]:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 94, 184, 0.1);
+            outline: none;
+        }
+
+        input[readonly] {
+            background-color: var(--light);
+            color: var(--gray);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status.approved {
+            background: #e8f8f1;
+            color: #1b8a45;
+            border: 1px solid #c8f0dd;
+        }
+
+        .status.pending {
+            background: #fff6e6;
+            color: #a66a00;
+            border: 1px solid #f7e2bf;
+        }
+
+        .note {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .small {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        table.recent-payments {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table.recent-payments th, table.recent-payments td {
+            border: 1px solid var(--gray-light);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        table.recent-payments th {
+            background: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        table.recent-payments tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table.recent-payments tr:hover {
+            background-color: #f1f7fd;
+        }
+
+        .payment-summary {
+            background: linear-gradient(135deg, #f8fafc 0%, #e8f2fc 100%);
+            border-left: 4px solid var(--primary);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-warning {
+            background: #fff6e6;
+            color: #a66a00;
+            border: 1px solid #f7e2bf;
+        }
+
+        .alert-info {
+            background: #e8f4f8;
+            color: #0c5460;
+            border: 1px solid #b8e2f0;
+        }
+
+        .card-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 30px;
+            background: var(--light);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            table.recent-payments {
+                font-size: 14px;
+            }
+
+            table.recent-payments th, table.recent-payments td {
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            table.recent-payments {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Premium Payment Portal</h1>
+        <p>Welcome, <span th:text="${customer.firstName + ' ' + customer.lastName}">Customer Name</span></p>
+    </div>
+
+    <div class="content">
+        <!-- Payment form: server should provide model attributes: customer (object), policy (object), insurancePlan (object), existingPayments (list of payments) -->
+        <form th:action="@{/payments/process}" method="post" id="paymentForm">
+            <div class="card payment-summary">
+                <h2 class="card-title"><i class="fas fa-file-invoice-dollar"></i> Payment Summary</h2>
+                <div class="summary-item">
+                    <span class="summary-label">Customer ID:</span>
+                    <span class="summary-value" th:text="${customer.id}">CUST001</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Insurance Plan:</span>
+                    <span class="summary-value" id="planName" th:text="${insurancePlan != null ? insurancePlan.name : (policy != null ? policy.insurancePlan.name : 'No active plan')}">Premium Health Plan</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Premium Amount:</span>
+                    <span class="summary-value" id="premiumDisplay" th:text="${insurancePlan != null ? insurancePlan.premium : (policy != null ? policy.insurancePlan.premium : 'N/A')}">$1,250.00</span>
+                </div>
+
+                <!-- Hidden fields for submission -->
+                <input type="hidden" name="customerId" th:value="${customer.id}" />
+                <input type="hidden" name="insurancePlanId" th:value="${insurancePlan != null ? insurancePlan.id : (policy != null ? policy.insurancePlan.id : '')}" />
+                <input type="hidden" name="premium" id="premium" th:value="${insurancePlan != null ? insurancePlan.premium : (policy != null ? policy.insurancePlan.premium : '')}" />
+                <input type="hidden" name="maskedCardNumber" id="maskedCardNumber" />
+                <input type="hidden" name="maskedCvv" id="maskedCvv" />
+                <input type="hidden" name="duplicate" id="duplicate" value="false" />
+                <input type="hidden" name="refundReason" id="refundReason" />
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Payment Details</h2>
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="month">Payment Month</label>
+                        <select id="month" name="month" required>
+                            <option value="" disabled selected>Select month</option>
+                            <option th:value="JAN">January</option>
+                            <option th:value="FEB">February</option>
+                            <option th:value="MAR">March</option>
+                            <option th:value="APR">April</option>
+                            <option th:value="MAY">May</option>
+                            <option th:value="JUN">June</option>
+                            <option th:value="JUL">July</option>
+                            <option th:value="AUG">August</option>
+                            <option th:value="SEP">September</option>
+                            <option th:value="OCT">October</option>
+                            <option th:value="NOV">November</option>
+                            <option th:value="DEC">December</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod" required>
+                            <option value="" disabled selected>Select method</option>
+                            <option value="credit">Credit Card</option>
+                            <option value="debit">Debit Card</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div id="statusBox" class="status" style="display:none;"></div>
+                <div id="duplicateNote" class="note" style="display:none;color:#a66a00;">
+                    <i class="fas fa-exclamation-triangle"></i> Note: This month already has a payment - submitting will register a duplicate payment for pending refund review.
+                </div>
+            </div>
+
+            <div class="card" id="cardDetails">
+                <h2 class="card-title"><i class="fas fa-credit-card"></i> Card Details</h2>
+                <div class="grid">
+                    <div class="form-group full">
+                        <label for="cardholderName">Cardholder Name</label>
+                        <input type="text" name="cardholderName" id="cardholderName" placeholder="Name as shown on card" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" autocomplete="off" maxlength="19" required />
+                        <div class="card-icons">
+                            <div class="card-icon"><i class="fab fa-cc-visa"></i></div>
+                            <div class="card-icon"><i class="fab fa-cc-mastercard"></i></div>
+                            <div class="card-icon"><i class="fab fa-cc-amex"></i></div>
+                            <div class="card-icon"><i class="fab fa-cc-discover"></i></div>
+                        </div>
+                        <div class="note">We will store only a masked version of the card number for security.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expiry">Expiry Date (MM/YY)</label>
+                        <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="password" id="cvv" placeholder="123" maxlength="4" required />
+                        <div class="note">3 or 4 digit security code</div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${insurancePlan == null}" class="alert alert-warning">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <strong>No Active Insurance Plan</strong>
+                    <p>No active insurance plan found for your account. Please apply for a policy or contact support before making a premium payment.</p>
+                </div>
+            </div>
+
+            <div class="form-group full" style="display: flex; gap: 15px; margin-top: 25px;">
+                <button type="submit" class="btn btn-primary" th:disabled="${insurancePlan == null}">
+                    <i class="fas fa-lock"></i> Pay Securely
+                </button>
+                <a th:href="@{/customer/dashboard}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </form>
+
+        <!-- Recent payments (server passes existingPayments list that is backed by premium_payments table) -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-history"></i> Recent Payments</h2>
+            <div th:if="${#lists.isEmpty(existingPayments)}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>No Payment History</strong>
+                    <p>You haven't made any premium payments yet.</p>
+                </div>
+            </div>
+            <div th:if="${!#lists.isEmpty(existingPayments)}" style="overflow-x: auto;">
+                <table class="recent-payments">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Month</th>
+                        <th>Plan</th>
+                        <th>Premium</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${existingPayments}">
+                        <td th:text="${p.id}">1</td>
+                        <td th:text="${p.month}">January</td>
+                        <td th:text="${p.insurancePlan != null ? p.insurancePlan.name : ''}">Plan A</td>
+                        <td th:text="${p.premium}">1000</td>
+                        <td>
+                                    <span th:if="${p.status == 'APPROVED'}" class="status approved" style="display: inline-flex; padding: 4px 8px; font-size: 12px;">
+                                        <i class="fas fa-check-circle"></i> Approved
+                                    </span>
+                            <span th:if="${p.status == 'PENDING'}" class="status pending" style="display: inline-flex; padding: 4px 8px; font-size: 12px;">
+                                        <i class="fas fa-clock"></i> Pending
+                                    </span>
+                            <span th:if="${p.status != 'APPROVED' && p.status != 'PENDING'}" th:text="${p.status}">Other</span>
+                        </td>
+                        <td th:text="${#temporals.format(p.createdAt, 'MMM dd, yyyy')}">Oct 19, 2025</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Utility: format card number with spaces
+    function formatCardNumber(value){
+        return value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+    }
+
+    const cardNumberInput = document.getElementById('cardNumber');
+    const cvvInput = document.getElementById('cvv');
+    const premiumInput = document.getElementById('premium');
+    const premiumDisplay = document.getElementById('premiumDisplay');
+    const statusBox = document.getElementById('statusBox');
+    const duplicateNote = document.getElementById('duplicateNote');
+    const duplicateField = document.getElementById('duplicate');
+    const refundReasonField = document.getElementById('refundReason');
+    const paymentMethodSelect = document.getElementById('paymentMethod');
+    const cardDetailsSection = document.getElementById('cardDetails');
+
+    // Format card number on input
+    cardNumberInput.addEventListener('input', function(e){
+        const formatted = formatCardNumber(this.value);
+        this.value = formatted;
+    });
+
+    // Format expiry date on input
+    document.getElementById('expiry').addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            this.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+    });
+
+    // Show/hide card details based on payment method
+    paymentMethodSelect.addEventListener('change', function() {
+        if (this.value === 'credit' || this.value === 'debit') {
+            cardDetailsSection.style.display = 'block';
+        } else {
+            cardDetailsSection.style.display = 'none';
+        }
+    });
+
+    // Masking helper
+    function maskCardNumber(full){
+        const digits = full.replace(/\D/g,'');
+        if(digits.length < 4) return '****';
+        const first4 = digits.slice(0,4);
+        const last4 = digits.slice(-4);
+        const maskedMiddle = 'X'.repeat(Math.max(0, digits.length - 8));
+        const masked = first4 + maskedMiddle + last4;
+        // add spaces for display
+        return masked.replace(/(.{4})/g,'$1 ').trim();
+    }
+
+    function maskCvv(cvv){
+        return '*'.repeat(cvv.length);
+    }
+
+    // Determine status based on premium thresholds
+    function updateStatus(){
+        const p = parseFloat(premiumInput.value || 0);
+        if(!isFinite(p) || p === 0){
+            statusBox.style.display = 'none';
+            return;
+        }
+        statusBox.style.display = 'flex';
+        if(p >= 100000){
+            statusBox.className = 'status pending';
+            statusBox.innerHTML = '<i class="fas fa-clock"></i> Status: Pending Approval (premium >= 100000)';
+        } else if(p <= 10000){
+            statusBox.className = 'status approved';
+            statusBox.innerHTML = '<i class="fas fa-check-circle"></i> Status: Payment Approved (premium <= 10000)';
+        } else {
+            statusBox.className = 'status pending';
+            statusBox.innerHTML = '<i class="fas fa-clock"></i> Status: Pending Review (premium requires manual review)';
+        }
+    }
+
+    // On load update status
+    updateStatus();
+
+    // Duplicate detection: check existingPayments provided by server
+    const existingPayments = /*[[${existingPayments}]]*/ [];
+    // The above will be rendered by Thymeleaf into a JS array of objects if provided.
+
+    document.getElementById('paymentForm').addEventListener('submit', function(e){
+        // basic client-side validation
+        const month = document.getElementById('month').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+
+        // block submission if there is no premium or no plan
+        const premiumVal = parseFloat((document.getElementById('premium').value || '0').toString());
+        if(!document.querySelector('input[name="insurancePlanId"]').value){
+            e.preventDefault();
+            alert('No insurance plan found for your account. Cannot proceed with payment.');
+            return;
+        }
+        if(!isFinite(premiumVal) || premiumVal <= 0){
+            e.preventDefault();
+            alert('Premium amount is missing or invalid. Please contact support.');
+            return;
+        }
+        if(!month){
+            e.preventDefault();
+            alert('Please select a month for the payment.');
+            return;
+        }
+        if(!paymentMethod){
+            e.preventDefault();
+            alert('Please select a payment method.');
+            return;
+        }
+
+        // For card payments, validate card details
+        if (paymentMethod === 'credit' || paymentMethod === 'debit') {
+            const cardholderName = document.getElementById('cardholderName').value;
+            const cardNumber = document.getElementById('cardNumber').value;
+            const cvv = document.getElementById('cvv').value;
+            const expiry = document.getElementById('expiry').value;
+
+            if (!cardholderName.trim()) {
+                e.preventDefault();
+                alert('Please enter the cardholder name.');
+                return;
+            }
+
+            if (cardNumber.replace(/\s/g, '').length < 16) {
+                e.preventDefault();
+                alert('Please enter a valid card number.');
+                return;
+            }
+
+            if (cvv.length < 3) {
+                e.preventDefault();
+                alert('Please enter a valid CVV.');
+                return;
+            }
+
+            if (!expiry.match(/^\d{2}\/\d{2}$/)) {
+                e.preventDefault();
+                alert('Please enter a valid expiry date in MM/YY format.');
+                return;
+            }
+        }
+
+        // detect duplicate payment for same month & plan
+        let isDuplicate = false;
+        const planIdFromForm = document.querySelector('input[name="insurancePlanId"]').value;
+        if(Array.isArray(existingPayments) && existingPayments.length){
+            for(let i=0;i<existingPayments.length;i++){
+                const p = existingPayments[i];
+                const pMonth = p.month || (p.monthName) || '';
+                // insurancePlan may be nested
+                const pPlanId = (p.insurancePlan && (p.insurancePlan.id || p.insurancePlanId)) ? (p.insurancePlan.id || p.insurancePlanId) : (p.insurancePlanId || null);
+                if(pMonth === month){
+                    if(planIdFromForm){
+                        if(('' + pPlanId) === ('' + planIdFromForm)){
+                            isDuplicate = true; break;
+                        }
+                    } else {
+                        isDuplicate = true; break;
+                    }
+                }
+            }
+        }
+
+        if(isDuplicate){
+            duplicateField.value = 'true';
+            refundReasonField.value = 'duplicate payment';
+            duplicateNote.style.display = 'block';
+
+            if (!confirm('A payment for this month already exists. This will create a duplicate payment that requires refund review. Do you want to continue?')) {
+                e.preventDefault();
+                return;
+            }
+        } else {
+            duplicateField.value = 'false';
+            refundReasonField.value = '';
+            duplicateNote.style.display = 'none';
+        }
+
+        // For card payments, mask card number and cvv before submitting to server
+        if (paymentMethod === 'credit' || paymentMethod === 'debit') {
+            const cardVal = cardNumberInput.value || '';
+            const cvvVal = cvvInput.value || '';
+
+            const maskedCard = maskCardNumber(cardVal);
+            const maskedCvv = maskCvv(cvvVal);
+
+            document.getElementById('maskedCardNumber').value = maskedCard;
+            document.getElementById('maskedCvv').value = maskedCvv;
+
+            // Remove raw card inputs so browser doesn't send them
+            cardNumberInput.value = '';
+            cvvInput.value = '';
+        }
+
+        // let the form submit normally
+    });
+
+    // If server rendered premiumDisplay but premium hidden is numeric string with commas, ensure premium hidden has numeric
+    (function normalizePremiumHidden(){
+        const pd = premiumDisplay ? premiumDisplay.textContent : '';
+        const hidden = premiumInput;
+        if(pd && (!hidden.value || hidden.value === '')){
+            // strip non-digits except decimal point
+            hidden.value = pd.replace(/[^0-9\.]/g,'') || '0';
+        }
+    })();
+
+</script>
+</body>
+</html>

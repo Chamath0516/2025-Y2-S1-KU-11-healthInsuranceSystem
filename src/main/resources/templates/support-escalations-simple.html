@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Escalations (Fallback)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="/css/theme.css" />
+    <style>
+        body { font-family: Arial, sans-serif; background:#f5f7fa; margin:0; padding:40px; }
+        .box { max-width:800px; margin:0 auto; background:white; padding:20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Escalations (Fallback)</h1>
+        <p th:text="${errorMessage}">If the full escalations page failed to render, this fallback view is shown.</p>
+        <p><a th:href="@{/support/dashboard}">Back to dashboard</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Hospital - HealthSure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #476EAE;
+        }
+
+        .register-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99);
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #476EAE;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: #48B3AF;
+        }
+
+        .register-title {
+            color: #476EAE;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #476EAE;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(71, 110, 174, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #48B3AF;
+            box-shadow: 0 0 0 3px rgba(72, 179, 175, 0.2);
+        }
+
+        .error-message {
+            color: #c62828;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+            min-height: 20px;
+        }
+
+        .success-message {
+            background: rgba(167, 227, 153, 0.2);
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #A7E399;
+            text-align: center;
+        }
+
+        .notice {
+            background: rgba(167, 227, 153, 0.2);
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #A7E399;
+            text-align: center;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #476EAE, #48B3AF);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 15px rgba(71, 110, 174, 0.3);
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(135deg, #3a5c95, #3a9c98);
+            box-shadow: 0 6px 20px rgba(71, 110, 174, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            color: #476EAE;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-align: center;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .back-link:hover {
+            color: #48B3AF;
+        }
+
+        .form-info {
+            background: rgba(167, 227, 153, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #A7E399;
+        }
+
+        .form-info h3 {
+            color: #476EAE;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .form-info p {
+            color: #476EAE;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="logo">Health<span>Sure</span></div>
+    <h2 class="register-title">Register as Hospital</h2>
+
+    <div th:if="${param.submitted}" class="notice">
+        Thank you — your registration has been submitted and is pending admin approval.
+    </div>
+
+    <div class="form-info">
+        <h3>Hospital Registration</h3>
+        <p>Complete this form to register your hospital with HealthSure. Your account will be activated after admin approval.</p>
+    </div>
+
+    <!-- Bind the form to the hospital model attribute provided by the controller -->
+    <form th:action="@{/register/hospital}" th:object="${hospital}" method="post">
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" th:field="*{email}" placeholder="hospital@example.com" required />
+        </div>
+
+        <div class="form-group">
+            <label for="contactNumber">Contact Number (optional)</label>
+            <input type="text" id="contactNumber" th:field="*{contactNumber}" placeholder="10 digit contact number" maxlength="10" oninput="validateContactNumber(this)" />
+            <span id="contact-error" class="error-message"></span>
+        </div>
+
+        <!-- Hospital-specific fields -->
+        <div class="form-group">
+            <label for="name">Hospital Name</label>
+            <input type="text" id="name" th:field="*{name}" placeholder="Hospital Name" required />
+        </div>
+
+        <div class="form-group">
+            <label for="location">Address / Location</label>
+            <input type="text" id="location" th:field="*{location}" placeholder="Street, City, State" required />
+        </div>
+
+        <button type="submit" class="register-btn">Register Hospital</button>
+    </form>
+    <a href="/" class="back-link">← Back to Home</a>
+</div>
+
+<script>
+    function validateContactNumber(input) {
+        const errorSpan = document.getElementById('contact-error');
+        // Only validate if there's a value (field is optional)
+        if (input.value.length > 0) {
+            // Remove any non-digit characters
+            input.value = input.value.replace(/\D/g, '');
+
+            if (input.value.length > 10) {
+                input.value = input.value.slice(0, 10);
+            }
+
+            if (!/^\d{10}$/.test(input.value)) {
+                errorSpan.textContent = 'Enter valid number (10 digits)';
+                return false;
+            } else {
+                errorSpan.textContent = '';
+                return true;
+            }
+        } else {
+            errorSpan.textContent = '';
+            return true;
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root{
+  --primary: #476EAE;
+  --secondary: #48B3AF;
+  --accent: #A7E399;
+  --highlight: #F6FF99;
+  --muted: #f4f7fb;
+  --text: #213547;
+}
+
+/* Global reset & base */
+*{box-sizing:border-box}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color:var(--text);
+  background: linear-gradient(180deg, rgba(71,110,174,0.06) 0%, rgba(72,179,175,0.03) 50%, rgba(167,227,153,0.02) 100%);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.container, .card {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(246,255,153,0.12) 100%);
+  border-radius:12px;
+  padding:20px;
+  box-shadow: 0 8px 30px rgba(33,53,71,0.08);
+}
+
+h1,h2,h3,h4{ color:var(--primary); margin:0 0 8px 0; font-weight:600 }
+small, .small{ color:#6b7785 }
+
+/* Buttons */
+.btn{ display:inline-block; padding:8px 14px; border-radius:10px; text-decoration:none; color:white; background:var(--primary); border:none; cursor:pointer; font-weight:600 }
+.btn.secondary{ background:var(--secondary) }
+.btn.ghost{ background:transparent; color:var(--primary); border:1px solid rgba(71,110,174,0.12) }
+
+/* Tables */
+table{ width:100%; border-collapse:collapse; font-size:0.95rem }
+th, td{ padding:12px 14px; border-bottom:1px solid rgba(33,53,71,0.06); text-align:left }
+th{ background: linear-gradient(90deg, rgba(71,110,174,0.06), rgba(72,179,175,0.03)); color:var(--primary); font-weight:700 }
+tr:hover{ background: rgba(72,179,175,0.03) }
+
+/* Badges / status */
+.status-open{ color:var(--secondary); font-weight:700 }
+.status-closed{ color:#d64545; font-weight:700 }
+.status-escalated{ color:var(--primary); font-weight:700 }
+.status-in_progress{ color:#2e86c1; font-weight:700 }
+
+/* Forms */
+input[type=text], input[type=email], input[type=password], select, textarea{ padding:10px 12px; border-radius:8px; border:1px solid rgba(33,53,71,0.08); width:100%; font-family:inherit }
+label{ font-weight:600; display:block; margin-bottom:6px }
+.form-row{ display:flex; gap:12px; }
+.form-row > *{ flex:1 }
+
+/* Utility */
+.truncate{ max-width:500px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.center{ text-align:center }
+.muted{ color:#6b7785 }
+
+/* Navigation header */
+.app-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 0 }
+.brand{ display:flex; align-items:center; gap:12px }
+.brand .logo{ width:44px; height:44px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; color:white; font-weight:700 }
+.brand h3{ margin:0; color:var(--primary) }
+
+/* Responsive */
+@media (max-width:900px){ .container{ padding:14px } table, .form-row{ font-size:0.9rem } }
+
+/* toast */
+.toast{ position:fixed; right:20px; bottom:20px; background:var(--primary); color:white; padding:10px 14px; border-radius:8px; display:none }
+.toast.show{ display:block }
+
+/* Force overrides for templates with inline styles */
+body[style] { background: linear-gradient(180deg, rgba(71,110,174,0.06) 0%, rgba(72,179,175,0.03) 50%, rgba(167,227,153,0.02) 100%) !important }
+
+/* Accent highlights */
+.highlight-pill{ display:inline-block; padding:6px 10px; background:var(--highlight); border-radius:999px; color:#2b3b4a; font-weight:700 }
+
+/* subtle card */
+.card-soft{ background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(247,251,241,0.6)); border-radius:12px; padding:16px; box-shadow:0 6px 18px rgba(71,110,174,0.06) }
+

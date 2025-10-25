@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Dashboard - HealthSure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #476EAE;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: #48B3AF;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(71, 110, 174, 0.1);
+            color: #476EAE;
+        }
+
+        .user-info {
+            margin-top: auto;
+            padding: 15px;
+            background: rgba(71, 110, 174, 0.05);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .user-info span {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: #476EAE;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: rgba(71, 110, 174, 0.1);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background: rgba(71, 110, 174, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .content-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99);
+        }
+
+        .welcome-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .welcome-section h2 {
+            color: #476EAE;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .welcome-text {
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Card Styling */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 25px;
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header h4 {
+            color: #476EAE;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card.border-warning {
+            border: 2px solid #ffc107;
+        }
+
+        .card.border-warning .card-header {
+            background: linear-gradient(135deg, #ffc107, #ffb300);
+            color: #2c3e50;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Table Styling */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background: linear-gradient(135deg, #476EAE, #48B3AF);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #476EAE, #48B3AF);
+            box-shadow: 0 4px 12px rgba(71, 110, 174, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3a5c94, #3a9c98);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(71, 110, 174, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #495057);
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ffb300);
+            color: #2c3e50;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #e0a800, #d39e00);
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+        }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, #138496, #117a8b);
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, #48B3AF, #A7E399) !important;
+        }
+
+        .bg-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e) !important;
+        }
+
+        .bg-secondary {
+            background: linear-gradient(135deg, #6c757d, #868e96) !important;
+        }
+
+        /* Alert Styling */
+        .alert {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(167, 227, 153, 0.2);
+            border-left-color: #48B3AF;
+            color: #1e8449;
+        }
+
+        .alert-danger {
+            background: rgba(255, 107, 107, 0.2);
+            border-left-color: #ff6b6b;
+            color: #c0392b;
+        }
+
+        .alert-info {
+            background: rgba(71, 110, 174, 0.2);
+            border-left-color: #476EAE;
+            color: #2c3e50;
+        }
+
+        /* Text Utilities */
+        .text-danger {
+            color: #ff6b6b !important;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">Health<span>Sure</span></div>
+        <div class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active">
+                🏠 Dashboard
+            </a>
+            <a href="/customer/policies" class="nav-item">
+                📄 My Policies
+            </a>
+            <a href="/customer/claims" class="nav-item">
+                📋 My Claims
+            </a>
+            <a href="/customer/profile" class="nav-item">
+                👤 Profile
+            </a>
+            <a href="/customer/support" class="nav-item">
+                💬 Support
+            </a>
+        </div>
+        <div class="user-info">
+            <span th:text="${'Welcome, ' + customerName}">Welcome, Customer</span>
+            <a th:href="@{/logout}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="content-header">
+            <div class="welcome-section">
+                <h2>Dashboard</h2>
+                <div class="welcome-text" th:text="${'Welcome, ' + customerName}">Welcome, Customer</div>
+            </div>
+
+            <!-- Flash messages -->
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            <div th:if="${infoMessage}" class="alert alert-info" th:text="${infoMessage}"></div>
+
+            <div class="actions">
+                <a th:href="@{/customer/claims/new}" class="btn btn-primary">Submit New Claim</a>
+                <a th:href="@{/customer/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Pending Submissions -->
+        <div class="card" th:if="${!#lists.isEmpty(pendingClaims)}">
+            <div class="card-header">
+                <h4>Pending Submissions</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Policy</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Submitted On</th>
+                            <th>Document</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="pc : ${pendingClaims}">
+                            <td th:text="${pc.id}"></td>
+                            <td th:text="${pc.policy != null ? pc.policy.policyNumber : '-'}"></td>
+                            <td th:text="${#strings.abbreviate(pc.description, 80)}"></td>
+                            <td>
+                                <!-- If there is a ToClaimOfficer submission for this pending claim, show doctor-specific status -->
+                                <span th:if="${toSubmissions[pc.id] != null and #strings.equalsIgnoreCase(toSubmissions[pc.id].status, 'APPROVED')}" class="badge bg-success">Doctor Approved</span>
+                                <span th:if="${toSubmissions[pc.id] != null and toSubmissions[pc.id].status != null and (toSubmissions[pc.id].status.toUpperCase().contains('SUBMITTED'))}" class="badge bg-info">Doctor Submitted</span>
+                                <span th:if="${toSubmissions[pc.id] != null and toSubmissions[pc.id].status != null and toSubmissions[pc.id].status.toUpperCase().contains('PENDING') }" class="badge bg-secondary">Awaiting Doctor</span>
+
+                                <!-- Fallback to pendingClaim.status for claim-officer statuses -->
+                                <span th:if="${pc.status == 'APPROVED'}" class="badge bg-success">Claim Officer Accepted</span>
+                                <span th:if="${pc.status == 'REJECTED'}" class="badge bg-danger">Claim Rejected</span>
+                                <span th:if="${pc.status == 'PENDING_INFORMATION'}" class="badge bg-warning">Info Requested</span>
+
+                                <!-- If neither toSubmission nor recognizable status present -->
+                                <span th:if="${toSubmissions[pc.id] == null and (pc.status == null or pc.status == '')}" class="badge bg-secondary">-</span>
+                           </td>
+                            <td th:text="${pc.amount != null ? ('$' + #numbers.formatDecimal(pc.amount, 1, 'COMMA', 2, 'POINT')) : '-'}"></td>
+                            <td th:text="${pc.submittedAt != null ? #temporals.format(pc.submittedAt, 'dd-MMM-yyyy') : '-'}"></td>
+                            <td>
+                                        <span th:if="${pc.documentName != null}">
+                                            <span th:text="${pc.documentName}"></span>
+                                        </span>
+                                <span th:if="${pc.documentName == null}">-</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Required Section -->
+        <div class="card border-warning" th:if="${!#lists.isEmpty(pendingClaimsNeedingInfo)}">
+            <div class="card-header">
+                <h4>Action Required: Claims Needing Your Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Pending Claim ID</th>
+                            <th>CPO's Message</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="pc : ${pendingClaimsNeedingInfo}">
+                            <td th:text="${pc.id}"></td>
+                            <td class="text-danger" th:text="${pc.informationRequestMessage != null ? pc.informationRequestMessage : (pc.description != null ? #strings.abbreviate(pc.description,80) : 'Information requested')}"></td>
+                            <td>
+                                <a th:href="@{/customer/pending-claims/{id}/respond(id=${pc.id})}" class="btn btn-warning">Provide Information</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claim History -->
+        <div class="card">
+            <div class="card-header">
+                <h4>Your Claim History</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Submitted On</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="claim : ${claims}" th:unless="${claim.status == 'PENDING_INFORMATION'}">
+                            <td th:text="${claim.id}"></td>
+                            <td th:text="${#strings.abbreviate(claim.description, 50)}"></td>
+                            <td th:text="${'$' + #numbers.formatDecimal(claim.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <td>
+                                        <span class="badge"
+                                              th:classappend="${#strings.toString(claim.status) == 'APPROVED' ? 'bg-success' : (#strings.toString(claim.status) == 'REJECTED' ? 'bg-danger' : 'bg-secondary')}"
+                                              th:text="${claim.status}"></span>
+                            </td>
+                            <td th:text="${#temporals.format(claim.submittedAt, 'dd-MMM-yyyy')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

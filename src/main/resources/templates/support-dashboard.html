@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Support Dashboard - HealthSure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+            border-image: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99) 1;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 4px solid;
+            border-image: linear-gradient(to bottom, #476EAE, #48B3AF, #A7E399, #F6FF99) 1;
+        }
+
+        .welcome-section h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #476EAE;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .card-title {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .card-content {
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3a5c94 0%, #3a9c98 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #48B3AF 0%, #A7E399 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #3a9c98 0%, #8bd47a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Modal for Track Progress */
+        .modal-overlay {
+            position: fixed;
+            left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            max-width: 720px;
+            width: 100%;
+            padding: 20px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+            border-left: 4px solid;
+            border-image: linear-gradient(to bottom, #476EAE, #48B3AF, #A7E399) 1;
+        }
+        .progress-bar-wrap {
+            background:#e9ecef;
+            height:12px;
+            border-radius:8px;
+            overflow:hidden;
+        }
+        .progress-bar {
+            height:100%;
+            transition: width 0.5s ease;
+        }
+        .progress-row {
+            margin-bottom:12px;
+        }
+
+        /* Flash message styling (for future use) */
+        .flash-message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+
+        .flash-success {
+            background-color: #A7E399;
+            border-left-color: #2ecc71;
+        }
+
+        .flash-error {
+            background-color: #ff6b6b;
+            color: white;
+            border-left-color: #c0392b;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="logo">Health<span style="color: #F6FF99;">Sure</span> Support</div>
+        <div class="user-info">
+            <span>Welcome, <span th:text="${username != null ? username : 'Support Officer'}">Support Officer</span></span>
+            <a th:href="@{/logout}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-section">
+        <h1>Customer Support Dashboard</h1>
+        <p>Manage customer inquiries, support tickets, and provide assistance</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">🎫</div>
+                <div class="card-title">Support Tickets</div>
+            </div>
+            <div class="card-content">
+                <p>View and manage customer support tickets, track resolution status, and respond to inquiries.</p>
+            </div>
+            <div class="card-actions">
+                <a href="/support/tickets" th:href="@{/support/tickets}" class="btn btn-primary">View Tickets</a>
+                <button id="trackProgressBtn" class="btn btn-secondary" type="button">Track Progress</button>
+            </div>
+        </div>
+
+        <!-- Escalations card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">🔺</div>
+                <div class="card-title">Escalations</div>
+            </div>
+            <div class="card-content">
+                <p>View and manage escalations raised from tickets, assign to senior staff, and track resolution.</p>
+            </div>
+            <div class="card-actions">
+                <a href="/support/escalations" th:href="@{/support/escalations}" class="btn btn-primary">View Escalations</a>
+            </div>
+        </div>
+
+        <!-- Analytics card removed as requested -->
+    </div>
+
+    <!-- Example flash messages -->
+    <div class="flash-message flash-success">
+        <strong>Success!</strong> Ticket #12345 has been resolved successfully.
+    </div>
+</div>
+
+<!-- Track Progress Modal -->
+<div id="trackProgressModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content" role="document">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2 style="margin:0; color:#2c3e50;">Ticket Progress</h2>
+            <button id="closeTrackProgress" class="btn btn-secondary" style="padding:6px 10px;">Close</button>
+        </div>
+        <div id="progressBody">
+            <div style="text-align:center; color:#6c757d;">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        const btn = document.getElementById('trackProgressBtn');
+        const modal = document.getElementById('trackProgressModal');
+        const closeBtn = document.getElementById('closeTrackProgress');
+        const body = document.getElementById('progressBody');
+
+        function showModal() { modal.classList.add('show'); modal.setAttribute('aria-hidden','false'); }
+        function hideModal() { modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+
+        btn && btn.addEventListener('click', async function(){
+            showModal();
+            body.innerHTML = '<div style="text-align:center; color:#6c757d;">Loading...</div>';
+            try {
+                // Simulating API call with mock data
+                setTimeout(() => {
+                    const data = {
+                        total: 150,
+                        openCount: 45,
+                        openPercent: 30,
+                        inProgressCount: 60,
+                        inProgressPercent: 40,
+                        escalatedCount: 15,
+                        escalatedPercent: 10,
+                        closedCount: 30,
+                        closedPercent: 20
+                    };
+
+                    // Build HTML for progress
+                    const total = data.total || 0;
+                    function row(label, count, percent, color) {
+                        return '\n<div class="progress-row">\n  <div style="display:flex; justify-content:space-between; font-weight:600; margin-bottom:6px;">\n    <span style="color:#2c3e50;">'+label+'</span>\n    <span style="font-weight:400; color:#34495e;">'+count+' ('+percent+'%)</span>\n  </div>\n  <div class="progress-bar-wrap">\n    <div class="progress-bar" style="width:'+percent+'%; background:'+color+';" aria-hidden="true"></div>\n  </div>\n</div>\n';
+                    }
+
+                    const html = '\n<div style="margin-bottom:10px; font-size:0.95rem; color:#34495e;">Total tickets: '+total+'</div>'+
+                        row('Open', data.openCount || 0, data.openPercent || 0, '#476EAE')+
+                        row('In Progress', data.inProgressCount || 0, data.inProgressPercent || 0, '#48B3AF')+
+                        row('Escalated', data.escalatedCount || 0, data.escalatedPercent || 0, '#A7E399')+
+                        row('Closed', data.closedCount || 0, data.closedPercent || 0, '#F6FF99');
+
+                    body.innerHTML = html;
+                }, 800);
+
+            } catch (err) {
+                console.error(err);
+                body.innerHTML = '<div style="color:#c0392b;">Error fetching progress.</div>';
+            }
+        });
+
+        closeBtn && closeBtn.addEventListener('click', hideModal);
+        // close modal on overlay click
+        modal && modal.addEventListener('click', function(e){ if (e.target === modal) hideModal(); });
+        // close on ESC
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hideModal(); });
+    })();
+</script>
+
+</body>
+</html>

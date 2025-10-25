@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Dependents - HealthSure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99);
+        }
+
+        .page-header {
+            padding: 30px 40px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #476EAE;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: #48B3AF;
+        }
+
+        h2 {
+            color: #476EAE;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            margin: 20px 40px 30px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(71, 110, 174, 0.1);
+        }
+
+        .section h3 {
+            margin-top: 0;
+            color: #476EAE;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(72, 179, 175, 0.2);
+        }
+
+        .dependents-list {
+            margin-bottom: 20px;
+        }
+
+        .dependent-item {
+            background: rgba(167, 227, 153, 0.1);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #A7E399;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .dependent-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .dependent-info h4 {
+            margin: 0 0 8px 0;
+            color: #476EAE;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .dependent-info p {
+            margin: 5px 0;
+            color: #476EAE;
+            opacity: 0.8;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .add-form {
+            background: rgba(167, 227, 153, 0.1);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #A7E399;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #476EAE;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(71, 110, 174, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #48B3AF;
+            box-shadow: 0 0 0 3px rgba(72, 179, 175, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #476EAE, #48B3AF);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(71, 110, 174, 0.3);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #3a5c95, #3a9c98);
+            box-shadow: 0 6px 20px rgba(71, 110, 174, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #8a939b);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #545b62, #6c757d);
+        }
+
+        .success {
+            background: rgba(167, 227, 153, 0.2);
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 40px;
+            border-left: 4px solid #A7E399;
+            font-weight: 500;
+        }
+
+        .error {
+            background: rgba(255, 205, 210, 0.2);
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 40px;
+            border-left: 4px solid #f44336;
+            font-weight: 500;
+        }
+
+        .no-dependents {
+            text-align: center;
+            color: #476EAE;
+            font-style: italic;
+            padding: 30px;
+            opacity: 0.7;
+        }
+
+        .relationship-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .relationship-option {
+            background: rgba(246, 255, 153, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(246, 255, 153, 0.5);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .relationship-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                margin: 15px 20px 25px;
+                padding: 20px;
+            }
+
+            .page-header {
+                padding: 20px 20px 10px;
+            }
+
+            .success, .error {
+                margin: 15px 20px;
+            }
+
+            .dependent-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .relationship-options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section {
+                margin: 10px 15px 20px;
+                padding: 15px;
+            }
+
+            .relationship-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <div class="logo">Health<span>Sure</span></div>
+        <h2>My Dependents</h2>
+    </div>
+
+    <div th:if="${successMessage}" class="success">[[${successMessage}]]</div>
+    <div th:if="${errorMessage}" class="error">[[${errorMessage}]]</div>
+
+    <!-- Existing Dependents Section -->
+    <div class="section">
+        <h3>Current Dependents</h3>
+        <div class="dependents-list">
+            <div th:if="${dependents != null and !#lists.isEmpty(dependents)}">
+                <div th:each="dependent : ${dependents}" class="dependent-item">
+                    <div class="dependent-info">
+                        <h4 th:text="${dependent.firstName + ' ' + dependent.lastName}">Dependent Name</h4>
+                        <p><strong>Relationship:</strong> <span th:text="${dependent.relationshipToCustomer}">Relationship</span></p>
+                        <p><strong>Date of Birth:</strong> <span th:text="${dependent.dateOfBirth}">Date</span></p>
+                    </div>
+                    <form th:action="@{/customer/dependents/delete/{id}(id=${dependent.dependentId})}" method="post" style="display: inline;">
+                        <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this dependent?')">Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div th:if="${dependents == null or #lists.isEmpty(dependents)}" class="no-dependents">
+                <p>No dependents added yet. Add your first dependent below.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Dependent Section -->
+    <div class="section">
+        <h3>Add New Dependent</h3>
+        <div class="add-form">
+            <form th:action="@{/customer/dependents/add}" th:object="${dependent}" method="post">
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" th:field="*{firstName}" required placeholder="Enter first name"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" th:field="*{lastName}" required placeholder="Enter last name"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="relationshipToCustomer">Relationship to You:</label>
+                    <select id="relationshipToCustomer" th:field="*{relationshipToCustomer}" required>
+                        <option value="">Select Relationship</option>
+                        <option value="Spouse">Spouse</option>
+                        <option value="Child">Child</option>
+                        <option value="Parent">Parent</option>
+                        <option value="Sibling">Sibling</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Add Dependent</button>
+                <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

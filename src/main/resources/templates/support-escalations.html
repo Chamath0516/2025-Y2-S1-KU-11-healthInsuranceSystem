@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Escalations - HealthSure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+            border-image: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99) 1;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .container {
+            max-width: 2000px;
+            margin: 20px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid #48B3AF;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .actions {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3a5c94 0%, #3a9c98 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48B3AF 0%, #A7E399 100%);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #3a9c98 0%, #8bd47a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #476EAE;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-open {
+            color: #1e8449;
+            font-weight: 600;
+        }
+
+        .status-closed {
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .status-escalated {
+            color: #d35400;
+            font-weight: 600;
+        }
+
+        .status-in_progress {
+            color: #2e86c1;
+            font-weight: 600;
+        }
+
+        .status-resolved {
+            color: #48B3AF;
+            font-weight: 600;
+        }
+
+        .small {
+            font-size: 0.9rem;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .truncate {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .status-select, .handled-by-select {
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #dcdcdc;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            background: white;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+
+        .status-select:focus, .handled-by-select:focus {
+            outline: none;
+            border-color: #476EAE;
+            box-shadow: 0 0 0 2px rgba(71, 110, 174, 0.2);
+        }
+
+        .status-updating {
+            opacity: 0.6;
+        }
+
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #476EAE;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 6px;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-weight: 500;
+            z-index: 1000;
+            border-left: 4px solid #48B3AF;
+        }
+
+        .toast.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .page-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-badge {
+            background: linear-gradient(135deg, #48B3AF 0%, #A7E399 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 5px;
+            align-self: flex-start;
+        }
+
+        .escalation-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .truncate {
+                max-width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .truncate {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="logo">Health<span style="color: #F6FF99;">Sure</span> Support</div>
+        <div class="user-info">
+            <span>Welcome, <span th:text="${username != null ? username : 'Support Officer'}">Support Officer</span></span>
+            <a th:href="@{/logout}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title">
+            <h1>Escalations <span class="escalation-indicator">High Priority</span></h1>
+            <div class="stats-badge">
+                Showing <span th:text="${escalations != null ? escalations.size() : 0}">0</span> escalations
+            </div>
+        </div>
+        <div class="actions">
+            <a th:href="@{/support/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+            <a th:href="@{/support/dashboard}" class="btn btn-success">+ New Escalation</a>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Subject</th>
+            <th>Assigned To</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Handled By</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="esc : ${escalations}">
+            <td th:text="${esc.id}">1</td>
+            <td th:text="${esc.customer != null ? esc.customer.firstName + ' ' + esc.customer.lastName : 'N/A'}">Customer Name</td>
+            <td th:text="${esc.subject}">Subject</td>
+            <td>
+                <span th:if="${esc.assignedToRole != null}" th:text="${esc.assignedToRole}" class="status-in_progress"></span>
+                <span th:if="${esc.assignedToRole == null}" class="small">Unassigned</span>
+            </td>
+            <td class="truncate" th:text="${esc.description}">Description</td>
+            <td>
+                <select class="status-select" th:attr="data-escalation-id=${esc.id}">
+                    <option th:value="'OPEN'" th:selected="${esc.status == 'OPEN'}">Open</option>
+                    <option th:value="'IN_PROGRESS'" th:selected="${esc.status == 'IN_PROGRESS'}">In Progress</option>
+                    <option th:value="'RESOLVED'" th:selected="${esc.status == 'RESOLVED'}">Resolved</option>
+                    <option th:value="'CLOSED'" th:selected="${esc.status == 'CLOSED'}">Closed</option>
+                </select>
+            </td>
+            <td th:text="${esc.createdAt}">2025-10-19T12:00</td>
+            <td>
+                <select class="handled-by-select" th:attr="data-escalation-id=${esc.id}">
+                    <option th:value="''" th:selected="${esc.assignedToRole == null or esc.assignedToRole == ''}">Unassigned</option>
+                    <option th:value="'FINANCE_MANAGER'" th:selected="${esc.assignedToRole == 'FINANCE_MANAGER'}">Financial Manager</option>
+                    <option th:value="'CLAIM_OFFICER'" th:selected="${esc.assignedToRole == 'CLAIM_OFFICER'}">Claim Officer</option>
+                    <option th:value="'INSURANCE_AGENT'" th:selected="${esc.assignedToRole == 'INSURANCE_AGENT'}">Insurance Agent</option>
+                </select>
+            </td>
+        </tr>
+        <tr th:if="${escalations == null or #lists.isEmpty(escalations)}">
+            <td colspan="8" class="small" style="text-align: center; padding: 20px;">
+                No escalations found. All issues are currently being handled at the support level.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    (function(){
+        const selects = document.querySelectorAll('.status-select');
+        const toast = document.getElementById('toast');
+
+        const csrfMeta = document.querySelector('meta[name="_csrf"]');
+        const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+        const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : null;
+        const csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : null;
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(()=> toast.classList.remove('show'), 3000);
+        }
+
+        selects.forEach(sel => {
+            sel.addEventListener('change', async function(e){
+                const select = e.target;
+                const escId = select.getAttribute('data-escalation-id');
+                const newStatus = select.value;
+
+                select.classList.add('status-updating');
+                select.disabled = true;
+
+                try {
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (csrfHeader && csrfToken) headers[csrfHeader] = csrfToken;
+
+                    const resp = await fetch('/api/escalations/' + encodeURIComponent(escId) + '/status', {
+                        method: 'PATCH',
+                        headers: headers,
+                        body: JSON.stringify({ status: newStatus })
+                    });
+
+                    if (resp.ok) {
+                        showToast('Escalation status updated successfully');
+                    } else {
+                        showToast('Failed to update status: ' + resp.status);
+                        const current = await resp.json().catch(()=>null);
+                        if (current && current.status) {
+                            select.value = current.status;
+                        }
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast('Error updating escalation status');
+                } finally {
+                    select.classList.remove('status-updating');
+                    select.disabled = false;
+                }
+            });
+        });
+
+        // Handle assignment selects (Handled By column)
+        const assignSelects = document.querySelectorAll('.handled-by-select');
+        assignSelects.forEach(s => {
+            s.addEventListener('change', async function(e){
+                const sel = e.target;
+                const escId = sel.getAttribute('data-escalation-id');
+                const assignedToRole = sel.value;
+
+                sel.classList.add('status-updating');
+                sel.disabled = true;
+
+                try {
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (csrfHeader && csrfToken) headers[csrfHeader] = csrfToken;
+
+                    const resp = await fetch('/api/escalations/' + encodeURIComponent(escId) + '/assign', {
+                        method: 'PATCH',
+                        headers: headers,
+                        body: JSON.stringify({ assignedToRole: assignedToRole })
+                    });
+
+                    if (resp.ok) {
+                        showToast('Escalation assigned to ' + assignedToRole.replaceAll('_', ' '));
+                        // Update the assigned to column text
+                        const row = sel.closest('tr');
+                        const assignedToCell = row.querySelector('td:nth-child(4)');
+                        if (assignedToRole) {
+                            assignedToCell.innerHTML = `<span class="status-in_progress">${assignedToRole}</span>`;
+                        } else {
+                            assignedToCell.innerHTML = `<span class="small">Unassigned</span>`;
+                        }
+                    } else {
+                        showToast('Failed to assign escalation: ' + resp.status);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast('Error assigning escalation');
+                } finally {
+                    sel.classList.remove('status-updating');
+                    sel.disabled = false;
+                }
+            });
+        });
+
+    })();
+</script>
+</body>
+</html>

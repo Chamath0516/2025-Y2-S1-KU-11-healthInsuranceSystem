@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Customer - HealthSure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #476EAE 0%, #48B3AF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #476EAE;
+        }
+
+        .register-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #476EAE, #48B3AF, #A7E399, #F6FF99);
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #476EAE;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: #48B3AF;
+        }
+
+        .register-title {
+            color: #476EAE;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #476EAE;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(71, 110, 174, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #48B3AF;
+            box-shadow: 0 0 0 3px rgba(72, 179, 175, 0.2);
+        }
+
+        .error-message {
+            color: #c62828;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+            min-height: 20px;
+        }
+
+        .success-message {
+            background: rgba(167, 227, 153, 0.2);
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #A7E399;
+        }
+
+        .error-message-global {
+            background: rgba(255, 205, 210, 0.2);
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f44336;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #476EAE, #48B3AF);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 15px rgba(71, 110, 174, 0.3);
+        }
+
+        .register-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #3a5c95, #3a9c98);
+            box-shadow: 0 6px 20px rgba(71, 110, 174, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .register-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .back-link {
+            color: #476EAE;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-align: center;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .back-link:hover {
+            color: #48B3AF;
+        }
+
+        .section-title {
+            color: #476EAE;
+            font-size: 1.2rem;
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(71, 110, 174, 0.1);
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .register-container {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="logo">Health<span>Sure</span></div>
+    <h2 class="register-title">Register as Customer</h2>
+
+    <div th:if="${param.error} == 'nicTaken'" class="error-message-global">
+        NIC is already registered. Please use a different NIC.
+    </div>
+    <div th:if="${param.error} == 'emailTaken'" class="error-message-global">
+        Email is already registered. Please use a different email.
+    </div>
+
+    <form th:action="@{/register/customer}" th:object="${customer}" method="post" id="registerForm" onsubmit="return validateForm()">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="nic">NIC (National Identity Card):</label>
+                <input type="text" id="nic" name="nic" th:field="*{nic}" placeholder="Enter your NIC number" required pattern="^\d{1,12}$" maxlength="12" onblur="checkNicUnique(this.value)" oninput="validateNic(this)"/>
+                <span id="nic-error" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" th:field="*{password}" placeholder="Password" required minlength="5" pattern=".{5,}" oninput="validatePassword(this)"/>
+                <span id="password-error" class="error-message"></span>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" th:field="*{email}" placeholder="Email" required pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" oninput="validateEmail(this)" />
+                <span id="email-error" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" th:field="*{firstName}" placeholder="First Name" required pattern="^[A-Za-z]+$">
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" th:field="*{lastName}" placeholder="Last Name" required pattern="^[A-Za-z]+$">
+            </div>
+
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth:</label>
+                <input type="date"
+                       id="dateOfBirth"
+                       name="dateOfBirth"
+                       th:field="*{dateOfBirth}"
+                       required
+                       th:attr="max=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" />
+                <span id="date-error" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" th:field="*{gender}" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="section-title">Address Information</div>
+
+            <div class="form-group full-width">
+                <label for="address.street">Street:</label>
+                <input type="text" id="address.street" name="address.street" th:field="*{address.street}" placeholder="Street" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address.city">City:</label>
+                <input type="text" id="address.city" name="address.city" th:field="*{address.city}" placeholder="City" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address.state">State:</label>
+                <input type="text" id="address.state" name="address.state" th:field="*{address.state}" placeholder="State" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address.zipCode">Zip Code:</label>
+                <input type="text" id="address.zipCode" name="address.zipCode" th:field="*{address.zipCode}" placeholder="Zip Code" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="contactNumber">Contact Number:</label>
+                <input type="text" id="contactNumber" name="contactNumber" th:field="*{contactNumber}" placeholder="Contact Number" required pattern="^\d{10}$" maxlength="10" oninput="validateContactNumber(this)"/>
+                <span id="contact-error" class="error-message"></span>
+            </div>
+        </div>
+
+        <button type="submit" id="registerBtn" class="register-btn">Register</button>
+    </form>
+    <a href="/" class="back-link">← Back to Home</a>
+</div>
+
+<script>
+    let nicTaken = false;
+
+    function checkNicUnique(nic) {
+        if (!nic) return;
+        console.log('Checking NIC:', nic); // Debug log
+        fetch('/api/check-nic?nic=' + encodeURIComponent(nic))
+            .then(response => {
+                console.log('Response status:', response.status); // Debug log
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data); // Debug log
+                const errorSpan = document.getElementById('nic-error');
+                const registerBtn = document.getElementById('registerBtn');
+                if (data.taken) {
+                    errorSpan.textContent = 'NIC is already registered.';
+                    nicTaken = true;
+                    if (registerBtn) registerBtn.disabled = true;
+                } else {
+                    errorSpan.textContent = '';
+                    nicTaken = false;
+                    if (registerBtn) registerBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error checking NIC:', error); // Debug log
+                document.getElementById('nic-error').textContent = 'Error checking NIC: ' + error.message;
+            });
+    }
+
+    function validateNic(input) {
+        const errorSpan = document.getElementById('nic-error');
+        // Remove any non-digit characters
+        input.value = input.value.replace(/\D/g, '');
+
+        if (input.value.length > 12) {
+            input.value = input.value.slice(0, 12);
+        }
+
+        if (input.value.length === 0) {
+            errorSpan.textContent = 'NIC is required';
+            return false;
+        } else if (input.value.length < 1) {
+            errorSpan.textContent = 'NIC must be at least 1 digit';
+            return false;
+        } else {
+            errorSpan.textContent = '';
+            return true;
+        }
+    }
+
+    function validateContactNumber(input) {
+        const errorSpan = document.getElementById('contact-error');
+        if (input.value.length > 10) {
+            input.value = input.value.slice(0, 10);
+        }
+        if (!/^\d{10}$/.test(input.value)) {
+            errorSpan.textContent = 'Enter valid number (10 digits)';
+            return false;
+        } else {
+            errorSpan.textContent = '';
+            return true;
+        }
+    }
+
+    function validatePassword(input) {
+        const errorSpan = document.getElementById('password-error');
+        if (input.value.length > 0 && input.value.length < 5) {
+            errorSpan.textContent = 'Password must be at least 5 characters';
+            return false;
+        } else {
+            errorSpan.textContent = '';
+            return true;
+        }
+    }
+
+    function validateEmail(input) {
+        const errorSpan = document.getElementById('email-error');
+        const pattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        if (!pattern.test(input.value)) {
+            errorSpan.textContent = 'Enter a valid email address (e.g. user@example.com)';
+            input.setCustomValidity('Enter a valid email address (e.g. user@example.com)');
+            return false;
+        } else {
+            errorSpan.textContent = '';
+            input.setCustomValidity('');
+            return true;
+        }
+    }
+
+    function validateForm() {
+        // Prevent submit if NIC is taken
+        if (nicTaken) {
+            document.getElementById('nic-error').textContent = 'NIC is already registered.';
+            return false;
+        }
+
+        // NIC validation
+        const nicInput = document.getElementById('nic');
+        if (!validateNic(nicInput)) return false;
+
+        // Contact number validation
+        const contactInput = document.getElementById('contactNumber');
+        if (!validateContactNumber(contactInput)) return false;
+
+        // Password validation
+        const passwordInput = document.getElementById('password');
+        if (!validatePassword(passwordInput)) return false;
+
+        // Email validation
+        const emailInput = document.getElementById('email');
+        if (!validateEmail(emailInput)) return false;
+
+        // Date of birth validation (robust)
+        const dobInput = document.getElementById('dateOfBirth');
+        const dobErrorSpan = document.getElementById('date-error');
+
+        // Use valueAsDate for robust date parsing
+        let dob = dobInput.valueAsDate;
+        dobInput.setCustomValidity('');
+        if (dobErrorSpan) dobErrorSpan.textContent = '';
+
+        if (!dob) {
+            dobInput.setCustomValidity('Please enter a valid date');
+            dobInput.reportValidity();
+            if (dobErrorSpan) dobErrorSpan.textContent = 'Please enter a valid date';
+            return false;
+        }
+
+        // Compare only date parts (ignore time-of-day)
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        dob.setHours(0,0,0,0);
+
+        if (dob > today) {
+            dobInput.setCustomValidity('Date of birth cannot be in the future');
+            dobInput.reportValidity();
+            if (dobErrorSpan) dobErrorSpan.textContent = 'Date of birth cannot be in the future';
+            return false;
+        } else {
+            dobInput.setCustomValidity('');
+            if (dobErrorSpan) dobErrorSpan.textContent = '';
+        }
+
+        // All good
+        return true;
+    }
+</script>
+
+</body>
+</html>
